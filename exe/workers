@@ -1,0 +1,26 @@
+require 'optparse'
+require_relative '../string_parser'
+
+args = ARGV.clone
+
+options = {:time => 60}
+
+OptionParser.new do |opts|
+  opts.banner = 'Usage: string_parser [options]'
+    opts.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
+        options[:verbose] = v
+    end
+
+    opts.on_tail('-h', '--help', 'Show this message') do
+        puts opts
+        exit
+    end
+
+    opts.on('-t <time_in_seconds>', '--time <time_in_seconds>', 'Specify timeout') do |time|
+        options[:time] = time
+        exit
+    end
+
+end.parse!(args)
+
+start(options).run
