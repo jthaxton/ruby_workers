@@ -1,5 +1,4 @@
 # Stream Searcher
 
 ## Summary
-This application opens up 10 worker threads to search a stream for the string 'Lpfn'. To execute, first run ``bundle install`` in the root directory, then run ```ruby -Ilib exe/run```. The run time will default to 60 (seconds), but you may specify a different time by adding option flags:
- ```-t <seconds>``` or ```--time <seconds>```. You may display a list of option flags by using ```-h``` or ```--help```
+This application opens up 10 worker threads to search a stream for the string "Lpfn". To execute, first run ``bundle install`` in the root directory, then run ```ruby -Ilib exe/run```. The run time will default to 60 (seconds), but you may specify a different time by adding option flags:```-t <seconds>``` or ```--time <seconds>```. You may also use the ```-f <filename>``` or ```--file <filename>``` flag to read from a file input. You may display a list of option flags by using ```-h``` or ```--help```. Note: If the total time is ~0 sec, the average bytes/sec will return N/A to avoid a division-by-zero error.

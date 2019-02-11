@@ -18,6 +18,10 @@ OptionParser.new do |opts|
     opts.on('-t <time_in_seconds>', '--time <time_in_seconds>', 'Specify timeout') do |time|
         options[:time] = time
     end
+
+    opts.on('-f <file>', '--file <file>', 'Specify txt file input') do |file|
+        options[:file] = file
+    end
 end.parse!(args)
 
 Search.new(options).start
