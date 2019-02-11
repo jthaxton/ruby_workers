@@ -20,10 +20,6 @@ class Search
             end
             puts "AVERAGE BYTES/SEC: #{@average}"
             @store = []
-            if @total_time > @time_lim
-                puts "TIMEOUT"
-                return
-            end
         else
             STDIN.each do |line|
                 populate_store(line)
@@ -73,13 +69,9 @@ class Search
                         read.each_line do |line|  
                             temp = search_stream(line, 0, 0, @time_lim)
                             result[0] += temp[0]
-                            @total_time += temp[0]
-                            @total_bytes += temp[1]
                             if result[0] > @time_lim
                                 result = [0, 0, 'TIMEOUT']
                                 break
-                            elsif result[2] == 'FAILURE'
-                                result = [0,0,'FAILURE']
                             end
                             result[1] += temp[1]
                             if temp[2] == 'SUCCESS'
@@ -125,27 +117,16 @@ class Search
                 end
             end
             thread_result = threads.map(&:value)
-            aggregate_result = [0,0,@status]
-            thread_result.each do |el|
-                @break_out = true if @total_time > @time_lim
-                @total_time += el[0]
-                @total_bytes += el[1]
-                aggregate_result[2] = @status
-            end 
             thread_result
         end
 
         def byte_count(line)
             read_str = ''
-            i = 0 
-            while i < line.length - 3
-                if line[i..i + 3] == 'Lpfn'
-                    read_str += line[i..i + 3]
-                    break
-                else 
-                    read_str += line[i]
-                end 
-                i += 1 
+            if line.include?("Lpfn")
+                idx = line.index("Lpfn")
+                read_str += line[0..idx + 3]
+            else 
+                read_str += line 
             end 
             @total_bytes += read_str.bytesize()
             return read_str.bytesize()
