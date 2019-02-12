@@ -13,17 +13,13 @@ class Search
         if @file 
             populate_store(nil)
             pp pretty_output
-            @store.each do |thread|
-                next if thread[2] != 'SUCCESS' 
-                @total_time += thread[0]
-            end
             puts "AVERAGE BYTES/SEC: #{@average}"
         else
             STDIN.each do |line|
                 populate_store(line)
                 pp pretty_output
                 puts "AVERAGE BYTES/SEC: #{@average}"
-                if @total_time > @time_lim || @break_out
+                if @break_out
                     break
                 end
             end
@@ -36,9 +32,13 @@ class Search
         def pretty_output
             result = []
             @store.each do |el|
-                result << ["ELAPSED TIME: #{el[2] == "FAILURE" ||
-                el[2] == "TIMEOUT" ? "N/A" : el[0]}","COUNT OF BYTES READ: #{el[2] == "FAILURE" ||
-                el[2] == "TIMEOUT" ? "N/A" : el[1]}", "STATUS: #{el[2]}"]
+                if el[2] != "SUCCESS"
+                    result << ["ELAPSED TIME: N/A",
+                    "COUNT OF BYTES READ:N/A","STATUS: #{el[2]}"]
+                else 
+                    result << ["ELAPSED TIME: #{el[0]}",
+                    "COUNT OF BYTES READ: #{el[1]}","STATUS: #{el[2]}"]
+                end
             end
             total_time = 0
             total_bytes = 0
@@ -114,13 +114,13 @@ class Search
         end
 
         def byte_count(line)
-        read_str = ''
-        if line.include?("Lpfn")
-            idx = line.index("Lpfn")
-            read_str += line[0..idx + 3]
-        else 
-            read_str += line 
-        end 
-        read_str.bytesize()
+            read_str = ''
+            if line.include?("Lpfn")
+                idx = line.index("Lpfn")
+                read_str += line[0..idx + 3]
+            else 
+                read_str += line 
+            end 
+            read_str.bytesize()
         end
 end

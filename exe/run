@@ -7,6 +7,16 @@ args = ARGV.clone
 
 options = {:time => 60}
 
+def validate(field)
+  field = field.dup.to_i
+  begin
+    Integer(field)
+  rescue => exception
+    raise "Invalid input! This argument takes positive integers only!"
+  end
+  raise "Invalid input! This argument takes positive integers only!" unless field > 0 
+end 
+
 OptionParser.new do |opts|
   opts.banner = 'Usage: string_parser [options]'
 
@@ -16,6 +26,7 @@ OptionParser.new do |opts|
     end
 
     opts.on('-t <time_in_seconds>', '--time <time_in_seconds>', 'Specify timeout') do |time|
+        validate(time)
         options[:time] = time
     end
 
